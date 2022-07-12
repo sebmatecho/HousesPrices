@@ -4,7 +4,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import numpy as np
-import boto3
+# import boto3
 import tempfile
 
 st.set_page_config(page_title='App - Pronóstico',
@@ -24,10 +24,10 @@ data = get_data()
 
 
 
-client = boto3.client('s3',
-        aws_access_key_id =  st.secrets["AWSAccessKeyId"],
-        aws_secret_access_key = st.secrets["AWSSecretKey"]
-        )
+# client = boto3.client('s3',
+#         aws_access_key_id =  st.secrets["AWSAccessKeyId"],
+#         aws_secret_access_key = st.secrets["AWSSecretKey"]
+#         )
 
 X = pd.DataFrame()
 banhos = st.sidebar.select_slider(
@@ -35,8 +35,8 @@ banhos = st.sidebar.select_slider(
           options=list(sorted(set(data['bathrooms']))))
 
 X.loc[0,'bathrooms'] = banhos
-# scaler = joblib.load('../parameters/bathrooms.sav')
-# X[['bathrooms']] = scaler.transform(X[['bathrooms']])
+scaler = joblib.load('../parameters/bathrooms.sav')
+X[['bathrooms']] = scaler.transform(X[['bathrooms']])
 
 # pisos = st.sidebar.select_slider(
 #           'Número de Pisos',
@@ -50,15 +50,15 @@ X.loc[0,'bathrooms'] = banhos
 habitaciones = st.sidebar.number_input('Número de habitaciones', min_value=1, max_value=10, value=3, step=1)
 
 X.loc[0,'bedrooms'] = habitaciones
-# scaler = joblib.load('../parameters/bedrooms.sav')
+scaler = joblib.load('../parameters/bedrooms.sav')
 
-# X[['bedrooms']] = scaler.transform(X[['bedrooms']])
+X[['bedrooms']] = scaler.transform(X[['bedrooms']])
 
 area = st.sidebar.number_input('Área del inmueble')
 
 X.loc[0,'sqft_living'] = area
-# scaler = joblib.load('../parameters/sqft_living.sav')
-# X[['sqft_living']] = scaler.transform(X[['sqft_living']])
+scaler = joblib.load('../parameters/sqft_living.sav')
+X[['sqft_living']] = scaler.transform(X[['sqft_living']])
 
 
 waterfront = st.sidebar.selectbox(
@@ -71,16 +71,16 @@ else:
     waterfront = 0
 
 X.loc[0,'waterfront'] = waterfront
-# scaler = joblib.load('../parameters/waterfront.sav')
-# X[['waterfront']] = scaler.transform(X[['waterfront']])
+scaler = joblib.load('../parameters/waterfront.sav')
+X[['waterfront']] = scaler.transform(X[['waterfront']])
 
 vista = st.sidebar.selectbox(
      'Puntaje de la vista',
      (0,1,2,3,4))
 
 X.loc[0,'view'] = vista
-# scaler = joblib.load('../parameters/view.sav')
-# X[['view']] = scaler.transform(X[['view']])
+scaler = joblib.load('../parameters/view.sav')
+X[['view']] = scaler.transform(X[['view']])
 
 
 
@@ -89,8 +89,8 @@ condicion = st.sidebar.selectbox(
      (0,1,2,3,4))
 
 X.loc[0,'condition'] = condicion
-# scaler = joblib.load('../parameters/condition.sav')
-# X[['condition']] = scaler.transform(X[['condition']])
+scaler = joblib.load('../parameters/condition.sav')
+X[['condition']] = scaler.transform(X[['condition']])
 
 
 puntaje =  st.sidebar.selectbox(
@@ -99,8 +99,8 @@ puntaje =  st.sidebar.selectbox(
 
 
 X.loc[0,'grade'] = puntaje
-# scaler = joblib.load('../parameters/grade.sav')
-# X[['grade']] = scaler.transform(X[['grade']])
+scaler = joblib.load('../parameters/grade.sav')
+X[['grade']] = scaler.transform(X[['grade']])
 
 
 renovacion = st.sidebar.selectbox(
@@ -113,15 +113,15 @@ else:
     renovacion = 0
 
 X.loc[0,'yr_renovated_dummy'] = renovacion
-# scaler = joblib.load('../parameters/yr_renovated_dummy.sav')
-# X[['yr_renovated_dummy']] = scaler.transform(X[['yr_renovated_dummy']])
+scaler = joblib.load('../parameters/yr_renovated_dummy.sav')
+X[['yr_renovated_dummy']] = scaler.transform(X[['yr_renovated_dummy']])
 
 
 edad = st.sidebar.number_input('Edad', min_value=1, max_value=100, value=20, step=1)
 
 X.loc[0,'property_age'] = edad
-# scaler = joblib.load('../parameters/property_age.sav')
-# X[['property_age']] = scaler.transform(X[['property_age']])
+scaler = joblib.load('../parameters/property_age.sav')
+X[['property_age']] = scaler.transform(X[['property_age']])
 
 lat = st.sidebar.slider('Latitud', 47.1559,47.7776, 47.46675)
 
@@ -143,21 +143,21 @@ variables = ['bedrooms', 'bathrooms', 'sqft_living', 'waterfront', 'view', 'cond
 #           scaler = joblib.load(fp)
 #           X[[nombre]] = scaler.transform(X[[nombre]])
 
-@st.cache
-def transformation(nombre): 
-     with tempfile.TemporaryFile() as fp: 
-               client.download_fileobj(Fileobj = fp, 
-                                        Bucket = 'precioscasas',
-                                        Key = nombre+'.sav'
-               )
-               fp.seek(0)
-               scaler = joblib.load(fp)
-     return scaler
+# @st.cache
+# def transformation(nombre): 
+#      with tempfile.TemporaryFile() as fp: 
+#                client.download_fileobj(Fileobj = fp, 
+#                                         Bucket = 'precioscasas',
+#                                         Key = nombre+'.sav'
+#                )
+#                fp.seek(0)
+#                scaler = joblib.load(fp)
+#      return scaler
 
      
-for nombre in variables: 
-     scaler_inner = transformation(nombre)
-     X[[nombre]] = scaler_inner.transform(X[[nombre]])
+# for nombre in variables: 
+#      scaler_inner = transformation(nombre)
+#      X[[nombre]] = scaler_inner.transform(X[[nombre]])
 
 
 st.markdown("""
@@ -178,13 +178,13 @@ En esta pestaña, un modelo de Machine Learning ha sido disponibilizado para gen
 
 if st.sidebar.button('Los parámetros han sido cargados. Calcular precio'):
 
-     with tempfile.TemporaryFile() as fp: 
-          client.download_fileobj(Fileobj = fp, 
-                                   Bucket = 'precioscasas',
-                                   Key = 'xbg_final.sav'
-          )
-          fp.seek(0)
-          modelo_final = joblib.load(fp)
+     # with tempfile.TemporaryFile() as fp: 
+     #      client.download_fileobj(Fileobj = fp, 
+     #                               Bucket = 'precioscasas',
+     #                               Key = 'xbg_final.sav'
+     #      )
+     #      fp.seek(0)
+     modelo_final = joblib.load('../parameters/bathrooms.sav')
      precio = modelo_final.predict(X)[0]
      st.balloons()
      st.success('El precio ha sido calculado')
