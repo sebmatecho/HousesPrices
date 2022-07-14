@@ -186,12 +186,12 @@ if st.sidebar.button('Los parámetros han sido cargados. Calcular precio'):
      #      fp.seek(0)
      modelo_final = joblib.load('./models/xbg_final.sav')
      precio = modelo_final.predict(X)[0]
-     st.balloons()
+     # st.balloons()
      st.success('El precio ha sido calculado')
 #     st.write('El precio sugerido es:', )
      st.metric("Precio Sugerido", np.expm1(precio), )
 else:
-     st.snow()
+     # st.snow()
      st.error('Por favor, seleccione los parámatros de la propiedad a estimar el precio.')
      
 
