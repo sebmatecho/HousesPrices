@@ -35,7 +35,7 @@ banhos = st.sidebar.select_slider(
           options=list(sorted(set(data['bathrooms']))))
 
 X.loc[0,'bathrooms'] = banhos
-scaler = joblib.load('../parameters/bathrooms.sav')
+scaler = joblib.load('./parameters/bathrooms.sav')
 X[['bathrooms']] = scaler.transform(X[['bathrooms']])
 
 # pisos = st.sidebar.select_slider(
