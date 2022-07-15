@@ -11,4 +11,4 @@ boto3
 scikit-learn==1.1.1
 xgboost==1.4.2.
 pyautogui
-st_aggrid
+streamlit-aggrid
