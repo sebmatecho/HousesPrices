@@ -1,7 +1,7 @@
 joblib
 folium
 matplotlib
-streamlit
+streamlit==1.11.0
 pandas
 seaborn
 numpy
@@ -10,3 +10,5 @@ streamlit_folium
 boto3
 scikit-learn==1.1.1
 xgboost==1.4.2.
+pyautogui
+st_aggrid

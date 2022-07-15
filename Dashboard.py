@@ -1,11 +1,15 @@
 import json
+from matplotlib import gridspec, ticker
 import folium
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import streamlit as st
 import matplotlib.pyplot as plt
+import streamlit.components.v1 as components
+import pyautogui
 
+from st_aggrid                import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 from PIL                      import Image
 from plotly                   import express as px
 from folium.plugins           import MarkerCluster
@@ -15,6 +19,44 @@ from distutils.fancy_getopt   import OptionDummy
 
 
 
+
+def folium_static(fig, width, height):
+
+    """
+    Renders `folium.Figure` or `folium.Map` in a Streamlit app. This method is 
+    a static Streamlit Component, meaning, no information is passed back from
+    Leaflet on browser interaction.
+    Parameters
+    ----------
+    width : int
+        Width of result
+    
+    Height : int
+        Height of result
+    Note
+    ----
+    If `height` is set on a `folium.Map` or `folium.Figure` object, 
+    that value supersedes the values set with the keyword arguments of this function. 
+    Example
+    -------
+     m = folium.Map(location=[45.5236, -122.6750])
+     folium_static(m)
+    """
+
+    # if Map, wrap in Figure
+    if isinstance(fig, folium.Map):
+        fig = folium.Figure().add_child(fig)
+        return components.html(
+            fig.render(), height=(fig.height or height) + 10, width=width
+            )
+
+    # if DualMap, get HTML representation
+    elif isinstance(fig, plugins.DualMap):
+        return components.html(
+            fig._repr_html_(), height=height + 10, width=width
+        )
+
+
 st.set_page_config(page_title='App - Venta de casas',
                     layout="wide", 
                     page_icon=':house',  
@@ -22,19 +64,17 @@ st.set_page_config(page_title='App - Venta de casas',
 
 
 
-
-st.title('Dinámica Inmobiliaria en King County')
-st.header('Propuesto por [Sébastien Lozano-Forero](https://www.linkedin.com/in/sebastienlozanoforero/)')
-
-
+width, height= pyautogui.size()
+### Extract
 # @st.cache
 def get_data():
      url = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/kc_house_data.csv'
      return pd.read_csv(url)
 
 data = get_data()
+# data = data.head(200)
 data_ref = data.copy()
-
+### Transform
 st.sidebar.markdown("# Parámetros")
 data['date'] = pd.to_datetime(data['date'], format = '%Y-%m-%d').dt.date
 data['yr_built']= pd.to_datetime(data['yr_built'], format = '%Y').dt.year
@@ -68,47 +108,48 @@ data['price_tier'] = data['price'].apply(lambda x: 'Primer cuartil' if x <= 3219
                                                    'Cuarto cuartil')
 
 data['price/sqft'] = data['price']/data['sqft_living']
+st.title('Dinámica Inmobiliaria en King County')
+st.markdown(
+"""
+##### Propuesto por [Sébastien Lozano-Forero](https://www.linkedin.com/in/sebastienlozanoforero/)
 
-# st.dataframe(data)
-st.write('Este dashboard tiene por objevito presentar rápida y fácilmente la información derivada del estudio de la dinámica inmobiliaria en King Count, WA (USA). Los datos están disponibles [aquí](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction) ')
+Este dashboard tiene por objevito presentar rápida y fácilmente la información derivada del estudio de la dinámica inmobiliaria en King Count, WA (USA). Los datos están disponibles [aquí](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction)
 
+## Filtro Requerido
 
-
-## Filtros
-st.subheader('Filtros Requeridos')
-# construccion = st.slider('Construcción después de:', int(data['yr_built'].min()),int(data['yr_built'].max()),1991)
-
-
-st.markdown("""
 Las casas han sido divididas en cuatro grupos de igual tañamo, basadas en su precio. 
 -  El Primer Cuartil contendrá información de las propiedades que cuestan menos de \$321.950 
 -  El Segundo Cuartil contendrá información de las propiedades que cuestan entre \$321.950 y \$450.000
 -  El Tercer Cuartil contendrá información de las propiedades que cuestan entre \$450.000 y \$645.000
 -  El Cuarto Cuartil contendrá información de las propiedades que cuestan más de \$645.000
-    """)
+
+El código postal puede utilizarse como proxy para lo localización de un inmueble en King County. Consulte [aquí](https://www.zipdatamaps.com/king-wa-county-zipcodes) para más información. 
+
+""")
 tier = st.multiselect(
      'Cuartil de precios',
     list(data['price_tier'].unique()),
      list(data['price_tier'].unique()))
 
 
-st.markdown("""
-El código postal puede utilizarse como proxy para lo localización de un inmueble en King County. Por favor, consulte [aquí](https://www.zipdatamaps.com/king-wa-county-zipcodes) para más información. 
-    """)
+st.markdown(
+"""
+### Filtros opcionales
+Con el objetivo de facilitar la exploración de lo datos, el usuario es libre de seleccionar los filtros necesarios. Una vez se seleccione la variable que se quiere usar como filtro del siguiente menú, utilice las sliders del banner izquierdo para manipular los valores permitidos de la variable. Tenga en cuenta que la inclusión y uso de los filtros también modificará las figuras presentadas en el resto de esta página. 
 
-zipcod = st.multiselect(
-     'Códigos postales',
-      list(sorted(set(data['zipcode']))),
-      list(sorted(set(data['zipcode']))))
-data = data[(data['price_tier'].isin(tier))&(data['zipcode'].isin(zipcod))]
-st.subheader('Filtros adicionales (Opcionales)')
-
+""")
 
 OptFiltro = st.multiselect(
      'Variables a incluir en los filtros:',
-     ['Habitaciones', 'Baños', 'Área construida (pies cuadrados)','Pisos','Vista al agua','Evaluación de la propiedad','Condición'],
+     ['Habitaciones', 'Baños', 'Área construida (pies cuadrados)','Pisos','Vista al agua','Evaluación de la propiedad','Condición', 'Código Postal'],
      ['Habitaciones', 'Baños'])
 
+if 'Código Postal' in OptFiltro:
+     zipcod = st.multiselect(
+          'Códigos postales',
+          list(sorted(set(data['zipcode']))),
+          list(sorted(set(data['zipcode']))))
+     data = data[(data['price_tier'].isin(tier))&(data['zipcode'].isin(zipcod))]
 
 if 'Habitaciones' in OptFiltro: 
      if data['bedrooms'].min() < data['bedrooms'].max():
@@ -188,16 +229,49 @@ if 'Condición' in OptFiltro:
                El filtro **Condición** no es aplicable para la selección actual de valores
                """)
 
+## Dashboard general 
+plt.rcParams.update(plt.rcParamsDefault)
+plt.style.use('bmh')
+fig = plt.figure(figsize = (24,12), constrained_layout = True)
+gs = gridspec.GridSpec(2, 2, figure = fig)
+fig.add_subplot(gs[0,:])
+# primer gráfico
+df = data[['yr_built', 'price']].groupby('yr_built').mean().reset_index()
+sns.lineplot(df['yr_built'], df['price'], color = 'orange')
+plt.ylabel('Price (Millions of Dollars)', fontsize = 20)
+plt.xlabel('Year of construction', fontsize = 20)
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
+# Segundo gráfico 
+fig.add_subplot(gs[1,0])
+df = data[['bedrooms','price']].groupby('bedrooms').mean().reset_index()
+
+sns.barplot(df['bedrooms'], df['price'], color = 'orange')
+plt.ylabel('Price (Millions of Dollars)', fontsize = 20)
+plt.xlabel('No. of bedrooms', fontsize = 20)
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
+# Tercer gráfico
+fig.add_subplot(gs[1,1])
+df = data[['bathrooms','price']].groupby('bathrooms').mean().reset_index()
+sns.barplot(df['bathrooms'], df['price'], color = 'orange')
+plt.ylabel('Price (Millions of Dollars)', fontsize = 20)
+plt.xlabel('No. of bathrooms', fontsize = 20)
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
+st.pyplot(fig)
+
 # Mapas 
+
 
 # info geojson
 url2 = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/KingCount.geojson'
+st.header('Distribución por Código Postal')
 col1, col2 = st.columns(2)
-with col1:
-     st.header("Densidad de casas disponibles por código postal")
+with col1: 
+     st.header("Densidad de casas disponibles")
      data_aux = data[['id','zipcode']].groupby('zipcode').count().reset_index()
      custom_scale = (data_aux['id'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
-
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
      folium.Choropleth(geo_data=url2, 
                     data=data_aux,
@@ -206,13 +280,15 @@ with col1:
                     threshold_scale=custom_scale,
                     fill_color='YlOrRd',
                     highlight=True).add_to(mapa)
-     folium_static(mapa)
+     folium_static(mapa, width=0.45*width, height=0.45*width)
 
 with col2: 
-     st.header("Precios de casas disponibles por código postal")
+     # df = data[['id','zipcode']].groupby('zipcode').count().reset_index().rename(columns= {'zipcode':'Postal code','id':'Count'}).sort_values('Count', ascending= False)
+     # st.dataframe(df)
+
+     st.header("Precios de casas disponibles")
      data_aux = data[['price','zipcode']].groupby('zipcode').mean().reset_index()
      custom_scale = (data_aux['price'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
-
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
      folium.Choropleth(geo_data=url2, 
                     data=data_aux,
@@ -221,15 +297,13 @@ with col2:
                     threshold_scale=custom_scale,
                     fill_color='YlOrRd',
                     highlight=True).add_to(mapa)
-     folium_static(mapa)
-
+     folium_static(mapa, width=0.45*width, height=0.45*width)
 
 col1, col2 = st.columns(2)
-with col1:
-     st.header("Costo de pie cuadrado por código postal")
+with col1: 
+     st.header("Costo de pie cuadrado")
      data_aux = data[['price/sqft','zipcode']].groupby('zipcode').mean().reset_index()
      custom_scale = (data_aux['price/sqft'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
-
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
      folium.Choropleth(geo_data=url2, 
                     data=data_aux,
@@ -238,26 +312,29 @@ with col1:
                     threshold_scale=custom_scale,
                     fill_color='YlOrRd',
                     highlight=True).add_to(mapa)
-     folium_static(mapa)
-
+     folium_static(mapa, width=0.45*width, height=0.45*width)
 with col2: 
-     st.header("Ubicación y detalles de casas disponibles")
-     mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=9)
-     markercluster = MarkerCluster().add_to(mapa)
-     for nombre, fila in data.iterrows():
-          folium.Marker([fila['lat'],fila['long']],
-                         popup = 'Precio: ${}, \n Fecha: {} \n {} habitaciones \n {} baños \n constuida en {} \n área de {} pies cuadrados \n Precio por pie cuadrado: {}'.format(
-                         fila['price'],
-                         fila['date'],
-                         fila['bedrooms'],
-                         fila['bathrooms'],
-                         fila['yr_built'], 
-                         fila['sqft_living'], 
-                         fila['price/sqft'])
-          ).add_to(markercluster)
-     folium_static(mapa)
+     st.header('Valores por código postal')
+     df = data[['id','zipcode','price','price/sqft']].groupby('zipcode').agg({'id':'count','price':'mean','price/sqft':'mean'}).reset_index().rename(columns= {'zipcode':'Postal code','id':'Count','price':'Average price','price/sqft':'Average price/sqft'})
+     # st.dataframe(df)
+     AgGrid(df)
 
 
+st.header("Información geográfica de las propiedades disponibles")
+mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=9)
+markercluster = MarkerCluster().add_to(mapa)
+for nombre, fila in data.iterrows():
+     folium.Marker([fila['lat'],fila['long']],
+                    popup = 'Precio: ${}, \n Fecha: {} \n {} habitaciones \n {} baños \n constuida en {} \n área de {} pies cuadrados \n Precio por pie cuadrado: {}'.format(
+                    fila['price'],
+                    fila['date'],
+                    fila['bedrooms'],
+                    fila['bathrooms'],
+                    fila['yr_built'], 
+                    fila['sqft_living'], 
+                    fila['price/sqft'])
+     ).add_to(markercluster)
+folium_static(mapa, width=width, height=0.45*width)
 # Estadística Descriptiva 
 att_num = data.select_dtypes(include = ['int64','float64'])
 media = pd.DataFrame(att_num.apply(np.mean))
@@ -266,50 +343,62 @@ std = pd.DataFrame(att_num.apply(np.std))
 maximo = pd.DataFrame(att_num.apply(np.max))
 minimo = pd.DataFrame(att_num.apply(np.min))
 df_EDA = pd.concat([minimo,media,mediana,maximo,std], axis = 1)
-df_EDA.columns = ['Mínimo','Media','Mediana','Máximo','std']
-st.header('Datos descriptivos')
+df_EDA.columns = ['Mínimo','Media','Mediana','Máximo','Variabilidad (DE)']
+st.markdown(
+     """
+### Información complementaria
+Finalmente, el resumen numérico de todas las variables consideradas en esta base de datos se presenta a continuación. Dicha información puede ser útil para encontrar tendencias dentro de clusters que sean de interés. 
+     
+     """)
 df_EDA = df_EDA.drop(index =['id', 'lat', 'long','yr_built','yr_renovated'], axis = 0 )
 
-df_EDA.index =['Precio','No. Cuartos', 'No. Baños', 'Área construida (pies cuadrados)', 
+df_EDA['Variable'] =['Precio','No. Cuartos', 'No. Baños', 'Área construida (pies cuadrados)', 
                     'Área del terreno (pies cuadrados)', 'No. pisos', 'Vista agua (dummy)',
                     'Puntaje de la vista', 'Condición','Evaluación propiedad (1-13)',
                     'Área sobre tierra', 'Área sótano', 'Área construída 15 casas más próximas', 
                     'Área del terreno 15 casas más próximas', 'Precio por pie cuadrado']
+df_EDA = df_EDA[['Variable','Mínimo','Media','Mediana','Máximo','Variabilidad (DE)']]  
 col1, col2 = st.columns(2)
 col1.metric("No. Casas", data.shape[0],str(100*round(data.shape[0]/data_ref.shape[0],4))+'% de las casas disponibles',delta_color="off")
 col2.metric("No. Casas Nuevas (Construida después de 1990)",data[data['house_age'] == 'new_house'].shape[0],str(100*round(data[data['house_age'] == 'new_house'].shape[0]/data_ref.shape[0],4))+'% de las casas disponibles',delta_color="off")
-st.dataframe(df_EDA)  
-
-st.header('Algunas tendencias')
+AgGrid(df_EDA)  
 
 
-col1, col2 = st.columns(2)
-with col1: 
-     st.write('Evolución del precio por tipo de propiedad y año de construcción')
-     data['dormitory_type']=data['bedrooms'].apply(lambda x: 'Estudio' if x <=1 else 'Apartamento' if x==2 else 'Casa' )
-     df = data[['yr_built', 'price','dormitory_type']].groupby(['yr_built','dormitory_type']).mean().reset_index()
-     with sns.axes_style("darkgrid"):
-          plt.style.use('dark_background')
-          fig = plt.figure(figsize=(7,7)) # try different values
-          fig = sns.lineplot(x ='yr_built', y= 'price', data = df, hue="dormitory_type", style="dormitory_type")
-          fig.set_xlabel("Año de Construcción", fontsize = 17)
-          fig.set_ylabel("Precio (Millones de Dólares)", fontsize = 17)
-          fig.legend(title='Tipo de propiedad', loc='upper right', labels=['Apartamento', 'Casa','Estudio'])
-          fig = fig.figure
-          st.pyplot(fig)
+# col1, col2 = st.columns(2)
+# with col1: 
+#      st.write('Evolución del precio por tipo de propiedad y año de construcción')
+#      data['dormitory_type']=data['bedrooms'].apply(lambda x: 'Estudio' if x <=1 else 'Apartamento' if x==2 else 'Casa' )
+#      df = data[['yr_built', 'price','dormitory_type']].groupby(['yr_built','dormitory_type']).mean().reset_index()
+#      with sns.axes_style("darkgrid"):
+#           plt.style.use('dark_background')
+#           fig = plt.figure(figsize=(6,6)) # try different values
+#           fig = sns.lineplot(x ='yr_built', y= 'price', data = df, hue="dormitory_type", style="dormitory_type")
+#           fig.set_xlabel("Año de Construcción", fontsize = 17)
+#           fig.set_ylabel("Precio (Millones de Dólares)", fontsize = 17)
+#           fig.legend(title='Tipo de propiedad', loc='upper right', labels=['Apartamento', 'Casa','Estudio'])
+#           fig = fig.figure
+#           st.pyplot(fig)
 
 
-with col2: 
-     st.write('Evolución del precio por pie cuadrado por tipo de propiedad y año de construcción')
-     df = data[['yr_built', 'price/sqft','dormitory_type']].groupby(['yr_built','dormitory_type']).mean().reset_index()
-     with sns.axes_style("darkgrid"):
-          plt.style.use('dark_background')
-          fig = plt.figure(figsize=(7,7)) # try different values
-          fig = sns.lineplot(x ='yr_built', y= 'price/sqft', data = df, hue="dormitory_type", style="dormitory_type")
-          fig.set_xlabel("Año de Construcción", fontsize = 17)
-          fig.set_ylabel("Precio por pie cuadrado (Dólares)", fontsize = 17)
-          fig.legend(title='Tipo de propiedad', loc='upper right', labels=['Apartamento', 'Casa','Estudio'])
-          fig = fig.figure
-          st.pyplot(fig)
+# with col2: 
+#      st.write('Evolución del precio por pie cuadrado por tipo de propiedad y año de construcción')
+#      df = data[['yr_built', 'price/sqft','dormitory_type']].groupby(['yr_built','dormitory_type']).mean().reset_index()
+#      with sns.axes_style("darkgrid"):
+#           plt.style.use('dark_background')
+#           fig = plt.figure(figsize=(6,6)) # try different values
+#           fig = sns.lineplot(x ='yr_built', y= 'price/sqft', data = df, hue="dormitory_type", style="dormitory_type")
+#           fig.set_xlabel("Año de Construcción", fontsize = 17)
+#           fig.set_ylabel("Precio por pie cuadrado (Dólares)", fontsize = 17)
+#           fig.legend(title='Tipo de propiedad', loc='upper right', labels=['Apartamento', 'Casa','Estudio'])
+#           fig = fig.figure
+#           st.pyplot(fig)
 
 
+
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
