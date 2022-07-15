@@ -214,7 +214,7 @@ if st.sidebar.button('Recomendar precio'):
      #                               Key = 'xbg_final.sav'
      #      )
      #      fp.seek(0)
-     modelo_final = joblib.load('./models/xbg_final.sav')
+     modelo_final = joblib.load('./parameters/xbg_final.sav')
      precio = modelo_final.predict(X)[0]
      # st.balloons()
      st.success('Un valor sugerido ha sido calculado')
