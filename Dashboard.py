@@ -113,7 +113,11 @@ st.markdown(
 """
 ##### Propuesto por [Sébastien Lozano-Forero](https://www.linkedin.com/in/sebastienlozanoforero/)
 
-Este dashboard tiene por objevito presentar rápida y fácilmente la información derivada del estudio de la dinámica inmobiliaria en King Count, WA (USA). Los datos están disponibles [aquí](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction)
+En Estados Unidos el mercado inmobiliario representa entre el 3% y el 5% del Producto Interno Bruto doméstico y continuamente recibe importantes inyecciones de capital que buscan optimizar la rentabilidad. Por tanto, existe una ventana de oportunidad interesante para integrar algunas de las tendencias globales en uso de información histórica y capacidades tecnológicas, que asistan la toma decisiones en various puntos de los flujogramas de proceso de entidades inmobiliarias. 
+
+Este dashboard se deriva del estudio de un de año de actividad inmobiliaria (entre 2014 y 2015) en King County, WA - USA, que cuenta con ~2.2 millones de personas, los datos originales están disponibles [aquí](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction). La idea principal es facilitar la presentación y manipulación de tal información con miras a un entendimiento más profundo de las tendencias en este mercado inmobiliario. 
+
+La pestaña **Dashboard** permite al usuario incorporar filtros que permitan estudiar tales tendencias de forma desagregada ([Paradoja de Simpson](https://en.wikipedia.org/wiki/Simpson%27s_paradox)). La pestaña **Recomendando Precios** incorpora un modelo de Machine Learning previamente entrenado para recomendar un precio a partir de las principales características del inmueble. El repositorio de este proyecto se encuentre disponible [acá](https://github.com/sebmatecho/HousesPrices)
 
 ## Filtro Requerido
 
