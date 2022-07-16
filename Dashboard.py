@@ -7,7 +7,7 @@ import seaborn as sns
 import streamlit as st
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
-import pyautogui
+# import pyautogui
 
 from st_aggrid                import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 from PIL                      import Image
@@ -64,7 +64,7 @@ st.set_page_config(page_title='App - Venta de casas',
 
 
 
-width, height= pyautogui.size()
+width, height=1300, 800#pyautogui.size()
 ### Extract
 # @st.cache
 def get_data():
