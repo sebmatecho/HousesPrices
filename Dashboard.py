@@ -1,5 +1,5 @@
 import json
-# from tkinter import N
+from tkinter import N
 from matplotlib import gridspec, ticker
 import folium
 import numpy as np
@@ -93,7 +93,7 @@ def dashboard (data):
      st.pyplot(fig)
      return None
 
-def mapa1(data,width=1200, height=750):
+def mapa1(data,width=1000, height=750):
      url2 = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/KingCount.geojson'
      data_aux = data[['id','zipcode']].groupby('zipcode').count().reset_index()
      custom_scale = (data_aux['id'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
@@ -108,7 +108,7 @@ def mapa1(data,width=1200, height=750):
      folium_static(mapa, width=0.45*width, height=0.45*width)
      return None
 
-def mapa2(data,width=1200, height=750):
+def mapa2(data,width=1000, height=750):
      url2 = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/KingCount.geojson'
      data_aux = data[['price','zipcode']].groupby('zipcode').mean().reset_index()
      custom_scale = (data_aux['price'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
@@ -123,7 +123,7 @@ def mapa2(data,width=1200, height=750):
      folium_static(mapa, width=0.45*width, height=0.45*width)
      return None
 
-def mapa3(data,width=1200, height=750):
+def mapa3(data,width=1000, height=750):
      url2 = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/KingCount.geojson'
      data_aux = data[['price/sqft','zipcode']].groupby('zipcode').mean().reset_index()
      custom_scale = (data_aux['price/sqft'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
@@ -138,7 +138,7 @@ def mapa3(data,width=1200, height=750):
      folium_static(mapa, width=0.45*width, height=0.45*width)
      return None
 
-def info_geo(data,width=1200, height=750):
+def info_geo(data,width=1000, height=750):
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=9)
      markercluster = MarkerCluster().add_to(mapa)
      for nombre, fila in data.iterrows():
