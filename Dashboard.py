@@ -56,7 +56,7 @@ def folium_static(fig, width, height):
             fig._repr_html_(), height=height + 10, width=width
         )
 
-@st.cache
+# @st.cache
 def get_data():
      url = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/kc_house_data.csv'
      return pd.read_csv(url)
