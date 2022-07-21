@@ -93,7 +93,7 @@ def dashboard (data):
      st.pyplot(fig)
      return None
 
-def mapa1(data,width=1000, height=750):
+def mapa1(data,width=1100, height=750):
      url2 = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/KingCount.geojson'
      data_aux = data[['id','zipcode']].groupby('zipcode').count().reset_index()
      custom_scale = (data_aux['id'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
@@ -108,7 +108,7 @@ def mapa1(data,width=1000, height=750):
      folium_static(mapa, width=0.45*width, height=0.45*width)
      return None
 
-def mapa2(data,width=1000, height=750):
+def mapa2(data,width=1100, height=750):
      url2 = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/KingCount.geojson'
      data_aux = data[['price','zipcode']].groupby('zipcode').mean().reset_index()
      custom_scale = (data_aux['price'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
@@ -279,6 +279,7 @@ st.set_page_config(page_title='App - Venta de casas',
                     page_icon=':house',  
                     initial_sidebar_state="expanded")
 
+@st.cache(allow_output_mutation=True)
 def extract():
      url = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/kc_house_data.csv'
      data = pd.read_csv(url)
@@ -393,7 +394,7 @@ def load(data):
           st.header('Valores por código postal')
           df = data[['id','zipcode','price','price/sqft']].groupby('zipcode').agg({'id':'count','price':'mean','price/sqft':'mean'}).reset_index().rename(columns= {'zipcode':'Postal code','id':'Count','price':'Average price','price/sqft':'Average price/sqft'})
           # st.dataframe(df)
-          AgGrid(df)
+          AgGrid(df,fit_columns_on_grid_load=True)
 
 
      st.header("Información geográfica de las propiedades disponibles")
@@ -412,7 +413,7 @@ def load(data):
      col1, col2 = st.columns(2)
      col1.metric("No. Casas", data.shape[0],str(100*round(data.shape[0]/data_ref,4))+'% de las casas disponibles',delta_color="off")
      col2.metric("No. Casas Nuevas (Construida después de 1990)",data[data['house_age'] == 'new_house'].shape[0],str(100*round(data[data['house_age'] == 'new_house'].shape[0]/data_ref,4))+'% de las casas disponibles',delta_color="off")
-     AgGrid(descriptiva(data))  
+     AgGrid(descriptiva(data),fit_columns_on_grid_load=True)  
      return None
 
 
