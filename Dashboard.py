@@ -339,7 +339,7 @@ def transform(data):
 
 ### Load
 
-def load(data):
+def load(data, geo_data):
      data_ref = data.shape[0]
      st.sidebar.markdown("# Parámetros")
 
@@ -392,9 +392,7 @@ def load(data):
      col1, col2 = st.columns(2)
      with col1: 
           st.header("Densidad de casas disponibles")
-          geo_info = get_geofile( list(set(data['zipcode'])) )
-          st.dataframe(geo_info)
-          # mapa1(data,geo_info)
+          mapa1(data,geo_data)
 
      with col2: 
           # df = data[['id','zipcode']].groupby('zipcode').count().reset_index().rename(columns= {'zipcode':'Postal code','id':'Count'}).sort_values('Count', ascending= False)
@@ -478,7 +476,8 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 if __name__ =='__main__':
      # Extract
      data = extract()
+     geo_info = get_geofile( list(set(data['zipcode'])) )
      # Transform
      data2 = transform(data)
      # Load
-     load(data2)
+     load(data2, geo_info)
