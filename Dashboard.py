@@ -59,7 +59,7 @@ def folium_static(fig, width=1200, height=750):
         )
 
 @st.cache(allow_output_mutation=True)
-def extract():
+def get_file():
      url = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/kc_house_data.csv'
      data = pd.read_csv(url)
      return data
@@ -420,10 +420,11 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 if __name__ =='__main__':
      # Extract
-     data = extract()
-     geo_info = get_geofile( list(set(data['zipcode'])) )
+     data = get_file()
+     
      # Transform
      data2 = transform(data)
      data3 = filt_opc(data2)
      # Load
+     geo_info = get_geofile( list(set(data3['zipcode'])) )
      load(data3, geo_info)
