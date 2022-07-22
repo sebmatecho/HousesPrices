@@ -114,7 +114,7 @@ def mapa1(data,width=1100, height=750):
      
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
      folium.Choropleth(
-                         geo_data=geo_info, 
+                         geo_data=geofile, 
                          data=data_aux,
                          key_on='feature.properties.ZIPCODE',
                          columns=['zipcode', 'id'],
