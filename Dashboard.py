@@ -393,6 +393,7 @@ def load(data):
      with col1: 
           st.header("Densidad de casas disponibles")
           geo_info = get_geofile( list(set(data['zipcode'])) )
+          st.dataframe(geo_info)
           # mapa1(data,geo_info)
 
      with col2: 
