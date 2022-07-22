@@ -286,7 +286,7 @@ def filt_opc(data):
                st.markdown("""
                     El filtro **Condición** no es aplicable para la selección actual de valores
                     """)
-     return None
+     return data
 
 st.set_page_config(page_title='App - Venta de casas',
                     layout="wide", 
@@ -368,7 +368,7 @@ def load(data, geo_data):
      """)
 
 
-     filt_opc(data)
+     data = filt_opc(data)
 
      ## Dashboard general 
 
