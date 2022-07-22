@@ -371,7 +371,8 @@ def load(data):
      # col1, col2 = st.columns(2)
      # with col1: 
      #      st.header("Densidad de casas disponibles")
-     mapa1(data,geo_data)
+     # mapa1(data,geo_data)
+     st.dataframe(geo_data)
 
      # with col2: 
      #      # df = data[['id','zipcode']].groupby('zipcode').count().reset_index().rename(columns= {'zipcode':'Postal code','id':'Count'}).sort_values('Count', ascending= False)
