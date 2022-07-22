@@ -20,8 +20,6 @@ from matplotlib.pyplot        import figimage
 from distutils.fancy_getopt   import OptionDummy
 
 
-
-
 def folium_static(fig, width=1200, height=750):
 # width, height=1300, 800#pyautogui.size()
     """
