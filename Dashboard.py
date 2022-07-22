@@ -326,8 +326,6 @@ def transform(data):
      data['price/sqft'] = data['price']/data['sqft_living']
      return data
 
-
-
 ### Load
 
 def load(data, geo_data):
@@ -359,25 +357,19 @@ def load(data, geo_data):
      Con el objetivo de facilitar la exploración de lo datos, el usuario es libre de seleccionar los filtros necesarios. Una vez se seleccione la variable que se quiere usar como filtro del siguiente menú, utilice las sliders del banner izquierdo para manipular los valores permitidos de la variable. Tenga en cuenta que la inclusión y uso de los filtros también modificará las figuras presentadas en el resto de esta página. 
 
      """)
-
-
+     ## data filtrada
      data = filt_opc(data)
 
      ## Dashboard general 
-
      dashboard(data)
 
-     # Mapas 
-
-
-     # info geojson
-
+     # Mapas
      st.header('Distribución por Código Postal')
      
      col1, col2 = st.columns(2)
      with col1: 
           st.header("Densidad de casas disponibles")
-          mapa1(data,geo_data)
+          # mapa1(data,geo_data)
 
      with col2: 
           # df = data[['id','zipcode']].groupby('zipcode').count().reset_index().rename(columns= {'zipcode':'Postal code','id':'Count'}).sort_values('Count', ascending= False)
@@ -415,39 +407,6 @@ def load(data, geo_data):
      col2.metric("No. Casas Nuevas (Construida después de 1990)",data[data['house_age'] == 'new_house'].shape[0],str(100*round(data[data['house_age'] == 'new_house'].shape[0]/data_ref,4))+'% de las casas disponibles',delta_color="off")
      AgGrid(descriptiva(data),fit_columns_on_grid_load=True)  
      return None
-
-
-# col1, col2 = st.columns(2)
-# with col1: 
-#      st.write('Evolución del precio por tipo de propiedad y año de construcción')
-#      data['dormitory_type']=data['bedrooms'].apply(lambda x: 'Estudio' if x <=1 else 'Apartamento' if x==2 else 'Casa' )
-#      df = data[['yr_built', 'price','dormitory_type']].groupby(['yr_built','dormitory_type']).mean().reset_index()
-#      with sns.axes_style("darkgrid"):
-#           plt.style.use('dark_background')
-#           fig = plt.figure(figsize=(6,6)) # try different values
-#           fig = sns.lineplot(x ='yr_built', y= 'price', data = df, hue="dormitory_type", style="dormitory_type")
-#           fig.set_xlabel("Año de Construcción", fontsize = 17)
-#           fig.set_ylabel("Precio (Millones de Dólares)", fontsize = 17)
-#           fig.legend(title='Tipo de propiedad', loc='upper right', labels=['Apartamento', 'Casa','Estudio'])
-#           fig = fig.figure
-#           st.pyplot(fig)
-
-
-# with col2: 
-#      st.write('Evolución del precio por pie cuadrado por tipo de propiedad y año de construcción')
-#      df = data[['yr_built', 'price/sqft','dormitory_type']].groupby(['yr_built','dormitory_type']).mean().reset_index()
-#      with sns.axes_style("darkgrid"):
-#           plt.style.use('dark_background')
-#           fig = plt.figure(figsize=(6,6)) # try different values
-#           fig = sns.lineplot(x ='yr_built', y= 'price/sqft', data = df, hue="dormitory_type", style="dormitory_type")
-#           fig.set_xlabel("Año de Construcción", fontsize = 17)
-#         
-#   fig.set_ylabel("Precio por pie cuadrado (Dólares)", fontsize = 17)
-#           fig.legend(title='Tipo de propiedad', loc='upper right', labels=['Apartamento', 'Casa','Estudio'])
-#           fig = fig.figure
-#           st.pyplot(fig)
-
-
 
 
 hide_streamlit_style = """
