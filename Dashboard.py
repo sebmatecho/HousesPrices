@@ -357,8 +357,7 @@ def load(data, geo_data):
      Con el objetivo de facilitar la exploración de lo datos, el usuario es libre de seleccionar los filtros necesarios. Una vez se seleccione la variable que se quiere usar como filtro del siguiente menú, utilice las sliders del banner izquierdo para manipular los valores permitidos de la variable. Tenga en cuenta que la inclusión y uso de los filtros también modificará las figuras presentadas en el resto de esta página. 
 
      """)
-     ## data filtrada
-     data = filt_opc(data)
+
 
      ## Dashboard general 
      dashboard(data)
@@ -369,7 +368,7 @@ def load(data, geo_data):
      col1, col2 = st.columns(2)
      with col1: 
           st.header("Densidad de casas disponibles")
-          # mapa1(data,geo_data)
+          mapa1(data,geo_data)
 
      with col2: 
           # df = data[['id','zipcode']].groupby('zipcode').count().reset_index().rename(columns= {'zipcode':'Postal code','id':'Count'}).sort_values('Count', ascending= False)
@@ -423,5 +422,6 @@ if __name__ =='__main__':
      geo_info = get_geofile( list(set(data['zipcode'])) )
      # Transform
      data2 = transform(data)
+     data3 = filt_opc(data2)
      # Load
-     load(data2, geo_info)
+     load(data3, geo_info)
