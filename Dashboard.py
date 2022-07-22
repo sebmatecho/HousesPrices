@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import streamlit as st
+import geopandas as gpd
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 # import pyautogui
@@ -57,6 +58,20 @@ def folium_static(fig, width=1200, height=750):
             fig._repr_html_(), height=height + 10, width=width
         )
 
+@st.cache(allow_output_mutation=True)
+def extract():
+     url = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/kc_house_data.csv'
+     data = pd.read_csv(url)
+     return data
+
+@st.cache(allow_output_mutation=True)
+def get_geofile( ZIP_list ):
+     url = 'https://opendata.arcgis.com/datasets/83fc2e72903343aabff6de8cb445b81c_2.geojson'
+     geofile = gpd.read_file( url )
+     geofile = geofile[geofile['ZIP'].isin(ZIP_list)]
+     return geofile
+# get geofile
+
 def dashboard (data):
      plt.rcParams.update(plt.rcParamsDefault)
      plt.style.use('bmh')
@@ -93,14 +108,15 @@ def dashboard (data):
      st.pyplot(fig)
      return None
 
-def mapa1(data,width=1100, height=750):
-     url2 = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/KingCount.geojson'
+
+def mapa1(data,geo_info,width=1100, height=750):
      data_aux = data[['id','zipcode']].groupby('zipcode').count().reset_index()
      custom_scale = (data_aux['id'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
+     
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
-     folium.Choropleth(geo_data=url2, 
+     folium.Choropleth(geo_data=geo_info, 
      data=data_aux,
-     key_on='feature.properties.ZIPCODE',
+     key_on='feature.properties.ZIP',
      columns=['zipcode', 'id'],
      threshold_scale=custom_scale,
      fill_color='YlOrRd',
@@ -279,11 +295,10 @@ st.set_page_config(page_title='App - Venta de casas',
                     page_icon=':house',  
                     initial_sidebar_state="expanded")
 
-@st.cache(allow_output_mutation=True)
-def extract():
-     url = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/kc_house_data.csv'
-     data = pd.read_csv(url)
-     return data
+
+
+
+
 
 def transform(data): 
      data['date'] = pd.to_datetime(data['date'], format = '%Y-%m-%d').dt.date
@@ -377,7 +392,8 @@ def load(data):
      col1, col2 = st.columns(2)
      with col1: 
           st.header("Densidad de casas disponibles")
-          mapa1(data)
+          geo_info = get_geofile( list(set(data['zipcode'])) )
+          mapa1(data,geo_info)
 
      with col2: 
           # df = data[['id','zipcode']].groupby('zipcode').count().reset_index().rename(columns= {'zipcode':'Postal code','id':'Count'}).sort_values('Count', ascending= False)
