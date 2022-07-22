@@ -110,7 +110,8 @@ def mapa1(data,geo_info,width=1100, height=750):
      custom_scale = data_aux['id'].quantile([0,0.2,0.4,0.6,0.8,1]).tolist()
      
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
-     folium.Choropleth(geo_data=geo_info, 
+     folium.Choropleth(
+                         #geo_data=geo_info, 
                          data=data_aux,
                          key_on='feature.properties.ZIPCODE',
                          columns=['zipcode', 'id'],
