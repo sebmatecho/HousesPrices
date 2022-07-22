@@ -124,12 +124,11 @@ def mapa1(data,geo_info,width=1100, height=750):
      folium_static(mapa, width=0.45*width, height=0.45*width)
      return None
 
-def mapa2(data,width=1100, height=750):
-     url2 = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/KingCount.geojson'
+def mapa2(data,geo_info,width=1100, height=750):
      data_aux = data[['price','zipcode']].groupby('zipcode').mean().reset_index()
      custom_scale = (data_aux['price'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
-     folium.Choropleth(geo_data=url2, 
+     folium.Choropleth(geo_data=geo_info, 
                     data=data_aux,
                     key_on='feature.properties.ZIPCODE',
                     columns=['zipcode', 'price'],
@@ -139,12 +138,11 @@ def mapa2(data,width=1100, height=750):
      folium_static(mapa, width=0.45*width, height=0.45*width)
      return None
 
-def mapa3(data,width=1000, height=750):
-     url2 = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/KingCount.geojson'
+def mapa3(data,geo_info,width=1000, height=750):
      data_aux = data[['price/sqft','zipcode']].groupby('zipcode').mean().reset_index()
      custom_scale = (data_aux['price/sqft'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
-     folium.Choropleth(geo_data=url2, 
+     folium.Choropleth(geo_data=geo_info, 
                     data=data_aux,
                     key_on='feature.properties.ZIPCODE',
                     columns=['zipcode', 'price/sqft'],
