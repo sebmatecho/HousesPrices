@@ -65,7 +65,7 @@ def get_file():
 @st.cache(allow_output_mutation=True)
 def get_geofile():
      url = 'https://opendata.arcgis.com/datasets/83fc2e72903343aabff6de8cb445b81c_2.geojson'
-     geofile = gpd.read_file( url )
+     geofile = gpd.read_file(url)
      return geofile
 # get geofile
 
@@ -327,7 +327,7 @@ def transform(data):
 
 ### Load
 
-def load(data, geofile):
+def load(data):
      data_ref = data.shape[0]
      st.sidebar.markdown("# Parámetros")
 
@@ -359,6 +359,7 @@ def load(data, geofile):
      
      data = filt_opc(data)
      ZIP_list =  list(set(data['zipcode'])) 
+     geofile = get_geofile() 
      geofile = geofile[geofile['ZIP'].isin(ZIP_list)]
      ## Dashboard general 
      dashboard(data)
@@ -421,8 +422,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 if __name__ =='__main__':
      # Extract
      data = get_file() 
-     geodata = get_geofile() 
      # Transform
      data2 = transform(data)
      # Load
-     load(data2,geodata)
+     load(data2)
