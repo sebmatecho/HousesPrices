@@ -65,10 +65,9 @@ def get_file():
      return data
 
 @st.cache(allow_output_mutation=True)
-def get_geofile( ZIP_list ):
+def get_geofile():
      url = 'https://opendata.arcgis.com/datasets/83fc2e72903343aabff6de8cb445b81c_2.geojson'
      geofile = gpd.read_file( url )
-     geofile = geofile[geofile['ZIP'].isin(ZIP_list)]
      return geofile
 # get geofile
 
@@ -330,7 +329,7 @@ def transform(data):
 
 ### Load
 
-def load(data):
+def load(data, geofile):
      data_ref = data.shape[0]
      st.sidebar.markdown("# Parámetros")
 
@@ -359,9 +358,10 @@ def load(data):
      Con el objetivo de facilitar la exploración de lo datos, el usuario es libre de seleccionar los filtros necesarios. Una vez se seleccione la variable que se quiere usar como filtro del siguiente menú, utilice las sliders del banner izquierdo para manipular los valores permitidos de la variable. Tenga en cuenta que la inclusión y uso de los filtros también modificará las figuras presentadas en el resto de esta página. 
 
      """)
-
+     ZIP_list =  list(set(data['zipcode'])) 
+     geofile = geofile[geofile['ZIP'].isin(ZIP_list)]
      data = filt_opc(data)
-     geoData = get_geofile( list(set(data['zipcode'])) )
+     
      ## Dashboard general 
      dashboard(data)
 
@@ -371,7 +371,7 @@ def load(data):
      # col1, col2 = st.columns(2)
      # with col1: 
      #      st.header("Densidad de casas disponibles")
-     mapa1(data,geoData)
+     mapa1(data,geofile)
      # st.dataframe(geoData)
 
      # with col2: 
@@ -423,8 +423,8 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 if __name__ =='__main__':
      # Extract
      data = get_file() 
+     geodata = get_geofile() 
      # Transform
      data2 = transform(data)
-     
      # Load
-     load(data2)
+     load(data2,geodata)
