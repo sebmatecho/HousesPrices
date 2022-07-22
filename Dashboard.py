@@ -108,7 +108,6 @@ def dashboard (data):
      st.pyplot(fig)
      return None
 
-
 def mapa1(data,geo_info,width=1100, height=750):
      data_aux = data[['id','zipcode']].groupby('zipcode').count().reset_index()
      custom_scale = (data_aux['id'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
@@ -188,14 +187,13 @@ def descriptiva(data):
      df_EDA = df_EDA[['Variable','Mínimo','Media','Mediana','Máximo','Variabilidad (DE)']]  
      return df_EDA 
 
-   
-
 def filt_opc(data):
      tier = st.multiselect(
           'Cuartil de precios', 
           list(data['price_tier'].unique()),
           list(data['price_tier'].unique())
           )
+     data = data[data['price_tier'].isin(tier)]
 
      OptFiltro = st.multiselect(
           'Variables a incluir en los filtros:',
@@ -207,7 +205,7 @@ def filt_opc(data):
                'Códigos postales',
                list(sorted(set(data['zipcode']))),
                list(sorted(set(data['zipcode']))))
-          data = data[(data['price_tier'].isin(tier))&(data['zipcode'].isin(zipcod))]
+          data = data[data['zipcode'].isin(zipcod)]
 
      if 'Habitaciones' in OptFiltro: 
           if data['bedrooms'].min() < data['bedrooms'].max():
@@ -292,11 +290,6 @@ st.set_page_config(page_title='App - Venta de casas',
                     layout="wide", 
                     page_icon=':house',  
                     initial_sidebar_state="expanded")
-
-
-
-
-
 
 def transform(data): 
      data['date'] = pd.to_datetime(data['date'], format = '%Y-%m-%d').dt.date
