@@ -396,12 +396,12 @@ def load(data, geo_data):
           # df = data[['id','zipcode']].groupby('zipcode').count().reset_index().rename(columns= {'zipcode':'Postal code','id':'Count'}).sort_values('Count', ascending= False)
           # st.dataframe(df)
           st.header("Precios de casas disponibles")
-          mapa2(data)
+          mapa2(data,geo_data)
 
      col1, col2 = st.columns(2)
      with col1: 
           st.header("Costo de pie cuadrado")
-          mapa3(data)
+          mapa3(data,geo_data)
           
      with col2: 
           st.header('Valores por código postal')
