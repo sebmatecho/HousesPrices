@@ -188,15 +188,15 @@ def descriptiva(data):
      df_EDA = df_EDA[['Variable','Mínimo','Media','Mediana','Máximo','Variabilidad (DE)']]  
      return df_EDA 
 
-def def_obl(data):
+# def def_obl(data):
+
+def filt_opc(data):
      tier = st.multiselect(
           'Cuartil de precios', 
           list(data['price_tier'].unique()),
           list(data['price_tier'].unique())
-          )
-     return None
+     )
 
-def filt_opc(data):
      OptFiltro = st.multiselect(
           'Variables a incluir en los filtros:',
           ['Habitaciones', 'Baños', 'Área construida (pies cuadrados)','Pisos','Vista al agua','Evaluación de la propiedad','Condición', 'Código Postal'],
@@ -361,13 +361,6 @@ def load(data, geo_data):
      -  El Cuarto Cuartil contendrá información de las propiedades que cuestan más de \$645.000
 
      El código postal puede utilizarse como proxy para lo localización de un inmueble en King County. Consulte [aquí](https://www.zipdatamaps.com/king-wa-county-zipcodes) para más información. 
-
-     """)
-
-     def_obl(data)
-
-     st.markdown(
-     """
      ### Filtros opcionales
      Con el objetivo de facilitar la exploración de lo datos, el usuario es libre de seleccionar los filtros necesarios. Una vez se seleccione la variable que se quiere usar como filtro del siguiente menú, utilice las sliders del banner izquierdo para manipular los valores permitidos de la variable. Tenga en cuenta que la inclusión y uso de los filtros también modificará las figuras presentadas en el resto de esta página. 
 
