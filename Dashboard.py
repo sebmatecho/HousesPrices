@@ -356,10 +356,10 @@ def load(data, geofile):
      Con el objetivo de facilitar la exploración de lo datos, el usuario es libre de seleccionar los filtros necesarios. Una vez se seleccione la variable que se quiere usar como filtro del siguiente menú, utilice las sliders del banner izquierdo para manipular los valores permitidos de la variable. Tenga en cuenta que la inclusión y uso de los filtros también modificará las figuras presentadas en el resto de esta página. 
 
      """)
+     
+     data = filt_opc(data)
      ZIP_list =  list(set(data['zipcode'])) 
      geofile = geofile[geofile['ZIP'].isin(ZIP_list)]
-     data = filt_opc(data)
-     
      ## Dashboard general 
      dashboard(data)
 
