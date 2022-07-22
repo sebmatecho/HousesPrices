@@ -114,12 +114,12 @@ def mapa1(data,geo_info,width=1100, height=750):
      
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
      folium.Choropleth(geo_data=geo_info, 
-     data=data_aux,
-     key_on='feature.properties.ZIPCODE',
-     columns=['zipcode', 'id'],
-     threshold_scale=custom_scale,
-     fill_color='YlOrRd',
-     highlight=True).add_to(mapa)
+                         data=data_aux,
+                         key_on='feature.properties.ZIPCODE',
+                         columns=['zipcode', 'id'],
+                         threshold_scale=custom_scale,
+                         fill_color='YlOrRd',
+                         highlight=True).add_to(mapa)
      folium_static(mapa, width=0.45*width, height=0.45*width)
      return None
 
@@ -291,6 +291,8 @@ st.set_page_config(page_title='App - Venta de casas',
                     page_icon=':house',  
                     initial_sidebar_state="expanded")
 
+### Transform
+
 def transform(data): 
      data['date'] = pd.to_datetime(data['date'], format = '%Y-%m-%d').dt.date
      data['yr_built']= pd.to_datetime(data['yr_built'], format = '%Y').dt.year
@@ -365,27 +367,27 @@ def load(data, geo_data):
      # Mapas
      st.header('Distribución por Código Postal')
      
-     col1, col2 = st.columns(2)
-     with col1: 
-          st.header("Densidad de casas disponibles")
-          mapa1(data,geo_data)
+     # col1, col2 = st.columns(2)
+     # with col1: 
+     #      st.header("Densidad de casas disponibles")
+     mapa1(data,geo_data)
 
-     with col2: 
-          # df = data[['id','zipcode']].groupby('zipcode').count().reset_index().rename(columns= {'zipcode':'Postal code','id':'Count'}).sort_values('Count', ascending= False)
-          # st.dataframe(df)
-          st.header("Precios de casas disponibles")
-          mapa2(data,geo_data)
+     # with col2: 
+     #      # df = data[['id','zipcode']].groupby('zipcode').count().reset_index().rename(columns= {'zipcode':'Postal code','id':'Count'}).sort_values('Count', ascending= False)
+     #      # st.dataframe(df)
+     #      st.header("Precios de casas disponibles")
+     #      mapa2(data,geo_data)
 
-     col1, col2 = st.columns(2)
-     with col1: 
-          st.header("Costo de pie cuadrado")
-          mapa3(data,geo_data)
+     # col1, col2 = st.columns(2)
+     # with col1: 
+     #      st.header("Costo de pie cuadrado")
+     #      mapa3(data,geo_data)
           
-     with col2: 
-          st.header('Valores por código postal')
-          df = data[['id','zipcode','price','price/sqft']].groupby('zipcode').agg({'id':'count','price':'mean','price/sqft':'mean'}).reset_index().rename(columns= {'zipcode':'Postal code','id':'Count','price':'Average price','price/sqft':'Average price/sqft'})
-          # st.dataframe(df)
-          AgGrid(df,fit_columns_on_grid_load=True)
+     # with col2: 
+     #      st.header('Valores por código postal')
+     #      df = data[['id','zipcode','price','price/sqft']].groupby('zipcode').agg({'id':'count','price':'mean','price/sqft':'mean'}).reset_index().rename(columns= {'zipcode':'Postal code','id':'Count','price':'Average price','price/sqft':'Average price/sqft'})
+     #      # st.dataframe(df)
+     #      AgGrid(df,fit_columns_on_grid_load=True)
 
 
      st.header("Información geográfica de las propiedades disponibles")
