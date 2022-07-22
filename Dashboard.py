@@ -331,7 +331,6 @@ def transform(data):
 ### Load
 
 def load(data):
-     geo_data = get_geofile( list(set(data['zipcode'])) )
      data_ref = data.shape[0]
      st.sidebar.markdown("# Parámetros")
 
@@ -361,7 +360,8 @@ def load(data):
 
      """)
 
-
+     data = filt_opc(data)
+     geo_data = get_geofile( list(set(data['zipcode'])) )
      ## Dashboard general 
      dashboard(data)
 
@@ -424,6 +424,6 @@ if __name__ =='__main__':
      data = get_file() 
      # Transform
      data2 = transform(data)
-     data3 = filt_opc(data2)
+     
      # Load
-     load(data3)
+     load(data2)
