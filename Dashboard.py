@@ -106,14 +106,11 @@ def dashboard (data):
      st.pyplot(fig)
      return None
 
-def mapa1(data,width=1100, height=750):
+def mapa1(data,geo_info,width=1100, height=750):
      data_aux = data[['id','zipcode']].groupby('zipcode').count().reset_index()
      custom_scale = data_aux['id'].quantile([0,0.2,0.4,0.6,0.8,1]).tolist()
-     geodata = get_geofile( )
-     test_list = list(map(int, list(set(data_aux['zipcode']))))
-     geodata = geodata[geodata['ZIP'].isin(test_list)]
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
-     folium.Choropleth(geo_data= geodata, 
+     folium.Choropleth(geo_data= geo_info, 
                          data=data_aux,
                          key_on='feature.properties.ZIPCODE',
                          columns=['zipcode', 'id'],
@@ -361,7 +358,7 @@ def load(data):
      """)
      
      data = filt_opc(data)
-     
+     geo_data = list(map(int, list(set(data['zipcode']))))
      ## Dashboard general 
      dashboard(data)
 
@@ -371,7 +368,7 @@ def load(data):
      # col1, col2 = st.columns(2)
      # with col1: 
      #      st.header("Densidad de casas disponibles")
-     mapa1(data)
+     mapa1(data,geo_data)
      # st.dataframe(geoData)
 
      # with col2: 
