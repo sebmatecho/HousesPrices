@@ -110,7 +110,8 @@ def mapa1(data,width=1100, height=750):
      data_aux = data[['id','zipcode']].groupby('zipcode').count().reset_index()
      custom_scale = data_aux['id'].quantile([0,0.2,0.4,0.6,0.8,1]).tolist()
      geodata = get_geofile( )
-     geodata = geodata[geodata['ZIP']== 98031]
+     test_list = [98001,98002,98003,98004]
+     geodata = geodata[geodata['ZIP'].isin(test_list)]
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
      folium.Choropleth(geo_data= geodata, 
                          data=data_aux,
