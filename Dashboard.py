@@ -62,11 +62,11 @@ def get_file():
      data = pd.read_csv(url)
      return data
 
-@st.cache(allow_output_mutation=True)
-def get_geofile(ZIP_list):
+# @st.cache(allow_output_mutation=True)
+def get_geofile():
      url = 'https://opendata.arcgis.com/datasets/83fc2e72903343aabff6de8cb445b81c_2.geojson'
      geofile = gpd.read_file(url)
-     geofile = geofile[geofile['ZIP'].isin(ZIP_list)]
+     # geofile = geofile[geofile['ZIP'].isin(ZIP_list)]
      return geofile
 # get geofile
 
@@ -111,8 +111,7 @@ def mapa1(data,width=1100, height=750):
      custom_scale = data_aux['id'].quantile([0,0.2,0.4,0.6,0.8,1]).tolist()
      
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
-     folium.Choropleth(
-                         geo_data=get_geofile( list(set(data['zipcode'])) ) , 
+     folium.Choropleth(geo_data=get_geofile( ) , 
                          data=data_aux,
                          key_on='feature.properties.ZIPCODE',
                          columns=['zipcode', 'id'],
@@ -122,33 +121,33 @@ def mapa1(data,width=1100, height=750):
      folium_static(mapa, width=0.45*width, height=0.45*width)
      return None
 
-def mapa2(data,geo_info,width=1100, height=750):
-     data_aux = data[['price','zipcode']].groupby('zipcode').mean().reset_index()
-     custom_scale = (data_aux['price'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
-     mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
-     folium.Choropleth(geo_data=geo_info, 
-                    data=data_aux,
-                    key_on='feature.properties.ZIPCODE',
-                    columns=['zipcode', 'price'],
-                    threshold_scale=custom_scale,
-                    fill_color='YlOrRd',
-                    highlight=True).add_to(mapa)
-     folium_static(mapa, width=0.45*width, height=0.45*width)
-     return None
+# def mapa2(data,geo_info,width=1100, height=750):
+#      data_aux = data[['price','zipcode']].groupby('zipcode').mean().reset_index()
+#      custom_scale = (data_aux['price'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
+#      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
+#      folium.Choropleth(geo_data=geo_info, 
+#                     data=data_aux,
+#                     key_on='feature.properties.ZIPCODE',
+#                     columns=['zipcode', 'price'],
+#                     threshold_scale=custom_scale,
+#                     fill_color='YlOrRd',
+#                     highlight=True).add_to(mapa)
+#      folium_static(mapa, width=0.45*width, height=0.45*width)
+#      return None
 
-def mapa3(data,geo_info,width=1000, height=750):
-     data_aux = data[['price/sqft','zipcode']].groupby('zipcode').mean().reset_index()
-     custom_scale = (data_aux['price/sqft'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
-     mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
-     folium.Choropleth(geo_data=geo_info, 
-                    data=data_aux,
-                    key_on='feature.properties.ZIPCODE',
-                    columns=['zipcode', 'price/sqft'],
-                    threshold_scale=custom_scale,
-                    fill_color='YlOrRd',
-                    highlight=True).add_to(mapa)
-     folium_static(mapa, width=0.45*width, height=0.45*width)
-     return None
+# def mapa3(data,geo_info,width=1000, height=750):
+#      data_aux = data[['price/sqft','zipcode']].groupby('zipcode').mean().reset_index()
+#      custom_scale = (data_aux['price/sqft'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()
+#      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
+#      folium.Choropleth(geo_data=geo_info, 
+#                     data=data_aux,
+#                     key_on='feature.properties.ZIPCODE',
+#                     columns=['zipcode', 'price/sqft'],
+#                     threshold_scale=custom_scale,
+#                     fill_color='YlOrRd',
+#                     highlight=True).add_to(mapa)
+#      folium_static(mapa, width=0.45*width, height=0.45*width)
+#      return None
 
 def info_geo(data,width=1000, height=750):
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=9)
