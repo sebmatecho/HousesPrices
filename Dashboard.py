@@ -63,9 +63,10 @@ def get_file():
      return data
 
 @st.cache(allow_output_mutation=True)
-def get_geofile():
+def get_geofile(ZIP_list):
      url = 'https://opendata.arcgis.com/datasets/83fc2e72903343aabff6de8cb445b81c_2.geojson'
      geofile = gpd.read_file(url)
+     geofile = geofile[geofile['ZIP'].isin(ZIP_list)]
      return geofile
 # get geofile
 
@@ -106,15 +107,12 @@ def dashboard (data):
      return None
 
 def mapa1(data,width=1100, height=750):
-     # ZIP_list =  list(set(data['zipcode'])) 
-     # geofile = 
-     # geofile = geofile[geofile['ZIP'].isin(ZIP_list)]
      data_aux = data[['id','zipcode']].groupby('zipcode').count().reset_index()
      custom_scale = data_aux['id'].quantile([0,0.2,0.4,0.6,0.8,1]).tolist()
      
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
      folium.Choropleth(
-                         geo_data=get_geofile() , 
+                         geo_data=get_geofile( list(set(data['zipcode'])) ) , 
                          data=data_aux,
                          key_on='feature.properties.ZIPCODE',
                          columns=['zipcode', 'id'],
