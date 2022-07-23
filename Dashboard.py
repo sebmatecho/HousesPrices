@@ -55,14 +55,14 @@ def folium_static(fig, width=1200, height=750):
         return components.html(
             fig._repr_html_(), height=height + 10, width=width
         )
-
+# Load
 @st.cache(allow_output_mutation=True)
 def get_file():
      url = 'https://raw.githubusercontent.com/sebmatecho/CienciaDeDatos/master/ProyectoPreciosCasas/data/kc_house_data.csv'
      data = pd.read_csv(url)
      return data
 
-# @st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True)
 def get_geofile():
      url = 'https://opendata.arcgis.com/datasets/83fc2e72903343aabff6de8cb445b81c_2.geojson'
      geofile = gpd.read_file(url)
@@ -182,6 +182,7 @@ def descriptiva(data):
                          'Área sobre tierra', 'Área sótano', 'Área construída 15 casas más próximas', 
                          'Área del terreno 15 casas más próximas', 'Precio por pie cuadrado']
      df_EDA = df_EDA[['Variable','Mínimo','Media','Mediana','Máximo','Variabilidad (DE)']]  
+     df_EDA = df_EDA.round(3)
      return df_EDA 
 
 def filt_opc(data):
@@ -364,6 +365,9 @@ def load(data,geo_data):
 
      # Mapas
      st.header('Distribución por Código Postal')
+     st.markdown("""
+     Las siguientes figuras muestran la distribución, vía mapas de calor, del número de inmuebles disponibles, precio total y precio por pie cuadrado a partir de los códigos postales. Esto es, un vez los inmuebles son agrupados  por código postal y el valor promedio dentro de cada cluster es obtenido, se clasifican en uno de cinco grupos utilizando los respectivos quintiles. De esta forma, cada una cantidad aproximada de códigos postales en cada clúster. 
+     """)
      
      col1, col2 = st.columns(2)
      with col1: 
@@ -372,8 +376,6 @@ def load(data,geo_data):
      # st.dataframe(geoData)
 
      with col2: 
-          # df = data[['id','zipcode']].groupby('zipcode').count().reset_index().rename(columns= {'zipcode':'Postal code','id':'Count'}).sort_values('Count', ascending= False)
-          # st.dataframe(df)
           st.header("Precios de casas disponibles")
           mapa2(data,geo_data)
 
@@ -386,7 +388,7 @@ def load(data,geo_data):
           st.header('Valores por código postal')
           df = data[['id','zipcode','price','price/sqft']].groupby('zipcode').agg({'id':'count','price':'mean','price/sqft':'mean'}).reset_index().rename(columns= {'zipcode':'Postal code','id':'Count','price':'Average price','price/sqft':'Average price/sqft'})
           # st.dataframe(df)
-          AgGrid(df,fit_columns_on_grid_load=True)
+          AgGrid(df.round(3),fit_columns_on_grid_load=True)
 
 
      st.header("Información geográfica de las propiedades disponibles")
