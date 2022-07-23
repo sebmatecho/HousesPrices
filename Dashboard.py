@@ -327,7 +327,7 @@ def transform(data):
 
 ### Load
 
-def load(data):
+def load(data,geo_data):
      data_ref = data.shape[0]
      st.sidebar.markdown("# Parámetros")
 
@@ -420,7 +420,8 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 if __name__ =='__main__':
      # Extract
      data = get_file() 
+     geo_data = get_geofile()
      # Transform
      data2 = transform(data)
      # Load
-     load(data2)
+     load(data2,geo_data)
