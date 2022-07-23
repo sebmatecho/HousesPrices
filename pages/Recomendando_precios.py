@@ -167,7 +167,7 @@ def load(X):
      """)
 
 
-     if st.sidebar.button('Recomendar precio'):
+     if st.button('Recomendar precio'):
 
           # with tempfile.TemporaryFile() as fp: 
           #      client.download_fileobj(Fileobj = fp, 
