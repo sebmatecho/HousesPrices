@@ -358,7 +358,7 @@ def load(data,geo_data):
      """)
      
      data = filt_opc(data)
-     geo_data = list(map(int, list(set(data['zipcode']))))
+     geo_data = geo_data[geo_data['ZIP'].isin(list(map(int, list(set(data['zipcode'])))))]
      ## Dashboard general 
      dashboard(data)
 
