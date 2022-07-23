@@ -361,7 +361,8 @@ def load(data):
      """)
      
      data = filt_opc(data)
-     st.write(list(set(data['zipcode'])))
+     
+     st.write(list(map(int, list(set(data['zipcode'])))))
      ## Dashboard general 
      dashboard(data)
 
