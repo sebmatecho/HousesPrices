@@ -109,9 +109,8 @@ def dashboard (data):
 def mapa1(data,width=1100, height=750):
      data_aux = data[['id','zipcode']].groupby('zipcode').count().reset_index()
      custom_scale = data_aux['id'].quantile([0,0.2,0.4,0.6,0.8,1]).tolist()
-     ZIP_list = list(data_aux['zipcode'])
      geodata = get_geofile( )
-     geodata = geodata[geodata['ZIP'].isin(ZIP_list)]
+     geodata = geodata[geodata['ZIP'].isin(data_aux['zipcode'].tolist())]
      mapa = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=8)
      folium.Choropleth(geo_data= geodata, 
                          data=data_aux,
