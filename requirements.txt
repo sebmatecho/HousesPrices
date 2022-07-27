@@ -1,5 +1,5 @@
-folium
 joblib
+folium
 matplotlib
 streamlit
 pandas
