@@ -180,7 +180,7 @@ Here, a Machine Learning model will suggest a price for a given property based o
           # st.balloons()
           st.success('A suggested value is now available!')
      #     st.write('El precio sugerido es:', )
-          st.metric("Suggested prive", '$'+str(f'{round(np.expm1(precio)):,}')+ ' usd')
+          st.metric("Suggested price", '$'+str(f'{round(np.expm1(precio)):,}')+ ' usd')
      else:
           # st.snow()
           st.error('Please enter the specifics of the property of interest.')
