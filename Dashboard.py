@@ -153,7 +153,7 @@ def info_geo(data,width=1000, height=750):
      markercluster = MarkerCluster().add_to(mapa)
      for nombre, fila in data.iterrows():
           folium.Marker([fila['lat'],fila['long']],
-                         popup = 'Precio: ${}, \n Fecha: {} \n {} habitaciones \n {} baños \n constuida en {} \n área de {} pies cuadrados \n Precio por pie cuadrado: {}'.format(
+                         popup = 'Price: ${}, \n Date: {} \n {} # rooms \n {} # bathrooms \n Built in {} \n  {} square foot \n Price per square foot: {}'.format(
                          fila['price'],
                          fila['date'],
                          fila['bedrooms'],
@@ -173,15 +173,15 @@ def descriptiva(data):
      maximo = pd.DataFrame(att_num.apply(np.max))
      minimo = pd.DataFrame(att_num.apply(np.min))
      df_EDA = pd.concat([minimo,media,mediana,maximo,std], axis = 1)
-     df_EDA.columns = ['Mínimo','Media','Mediana','Máximo','Variabilidad (DE)']
+     df_EDA.columns = ['Min','Average','Median','Max','Variability (DE)']
      df_EDA = df_EDA.drop(index =['id', 'lat', 'long','yr_built','yr_renovated'], axis = 0 )
 
-     df_EDA['Variable'] =['Precio','No. Cuartos', 'No. Baños', 'Área construida (pies cuadrados)', 
-                         'Área del terreno (pies cuadrados)', 'No. pisos', 'Vista agua (dummy)',
-                         'Puntaje de la vista', 'Condición','Evaluación propiedad (1-13)',
-                         'Área sobre tierra', 'Área sótano', 'Área construída 15 casas más próximas', 
-                         'Área del terreno 15 casas más próximas', 'Precio por pie cuadrado']
-     df_EDA = df_EDA[['Variable','Mínimo','Media','Mediana','Máximo','Variabilidad (DE)']]  
+     df_EDA['Variable'] =['Price','No. rooms', 'No. bathrooms', 'Footage (sqrt feet)', 
+                         'terrain footage (sqrt feet)', 'No. floors', 'Waterfront (dummy)',
+                         'View grade (1-5)', 'Condition (1-10)','Property assessment (1-13)',
+                         'Footage (non basement area)', 'Footage (basement area)', 'Footage 15 closest houses', 
+                         'Footage terrain 15 closest houses', 'Price per sqrt feet']
+     df_EDA = df_EDA[['Variable','Min','Average','Median','Max','Variability (DE)']]  
      df_EDA = df_EDA.round(3)
      return df_EDA 
 
@@ -284,7 +284,7 @@ def filt_opc(data):
                     """)
      return data
 
-st.set_page_config(page_title='App - Venta de casas',
+st.set_page_config(page_title='App - Selling properties',
                     layout="wide", 
                     page_icon=':house',  
                     initial_sidebar_state="expanded")
@@ -389,7 +389,7 @@ def load(data,geo_data):
           AgGrid(df.round(3),fit_columns_on_grid_load=True)
 
 
-     st.header("Where are this properties?")
+     st.header("Where are these properties?")
 
      info_geo(data)
 
