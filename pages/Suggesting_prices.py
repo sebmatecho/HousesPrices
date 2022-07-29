@@ -9,13 +9,13 @@ import tempfile
 
 
 
-st.set_page_config(page_title='App - Pronóstico',
+st.set_page_config(page_title='App - Suggesting prices',
                     layout="wide", 
                     page_icon='🚀',  
                     initial_sidebar_state="expanded")
 
-st.title("Pronosticando precios de casas")
-st.sidebar.markdown("Características")
+st.title("Suggesting propertie prices")
+st.sidebar.markdown("Description of the property")
 
 @st.cache(allow_output_mutation=True)
 def get_data():
@@ -25,7 +25,7 @@ def get_data():
 def transform(data):
      X = pd.DataFrame()
      banhos = st.sidebar.select_slider(
-               'Número de Baños',
+               'How many bathrooms?',
                options=list(sorted(set(data['bathrooms']))), value = 1.5)
 
      X.loc[0,'bathrooms'] = banhos
@@ -42,7 +42,7 @@ def transform(data):
 
 
      habitaciones = st.sidebar.select_slider(
-               'Número de habitaciones',
+               'How many rooms?',
                options=list(sorted(set(data['bedrooms']))), value = 2)
 
      # st.sidebar.number_input('Número de habitaciones', min_value=1, max_value=10, value=3, step=1)
@@ -53,7 +53,7 @@ def transform(data):
      X[['bedrooms']] = scaler.transform(X[['bedrooms']])
 
      area = st.sidebar.select_slider(
-               'Área del inmueble (pies cuadrados)',
+               'Square footage',
                options=list(sorted(set(data['sqft_living']))), value = 1000)
 
      # st.sidebar.number_input('', value = 1000)
@@ -66,7 +66,7 @@ def transform(data):
 
 
      vista = st.sidebar.select_slider(
-               'Puntaje de la vista',
+               'View mark',
                options=list(sorted(set(data['view']))), value = 0)
 
      # st.sidebar.select_slider(
@@ -80,7 +80,7 @@ def transform(data):
 
 
      condicion = st.sidebar.select_slider(
-          'Condición del inmueble',
+          'General condition',
                options=list(sorted(set(data['condition']))), value = 3)
 
      # st.sidebar.selectbox(
@@ -93,7 +93,7 @@ def transform(data):
 
 
      puntaje = st.sidebar.select_slider(
-          'Puntaje de construcción',
+          'Construction mark',
                options=list(sorted(set(data['grade']))), value = 8)
 
 
@@ -102,7 +102,7 @@ def transform(data):
      X[['grade']] = scaler.transform(X[['grade']])
 
      edad = st.sidebar.select_slider(
-          'Antigüedad de la propiedad', 
+          'Age of property', 
           options=list(range(1,80)), value = 10)
      
      X.loc[0,'property_age'] = edad
@@ -110,10 +110,10 @@ def transform(data):
      X[['property_age']] = scaler.transform(X[['property_age']])
 
      waterfront = st.sidebar.selectbox(
-          'La propiedad cuenta con vista al agua?',
-          ('Sí', 'No'))
+          'Waterfront?',
+          ('Yes', 'No'))
 
-     if waterfront == 'Sí': 
+     if waterfront == 'Yes': 
           waterfront = 1
      else:  
           waterfront = 0
@@ -123,10 +123,10 @@ def transform(data):
      X[['waterfront']] = scaler.transform(X[['waterfront']])
 
      renovacion = st.sidebar.selectbox(
-          'La propiedad ha sido renovada alguna vez?',
-          ('Sí', 'No'))
+          'Has the property being renovated?',
+          ('Yes', 'No'))
 
-     if renovacion == 'Sí': 
+     if renovacion == 'Yes': 
           renovacion = 1
      else:  
           renovacion = 0
@@ -137,7 +137,7 @@ def transform(data):
      df_coord = data[['zipcode','lat','long']].groupby('zipcode').agg({'lat':'mean','long':'mean'}).reset_index()
      
      cod = st.sidebar.selectbox(
-          'Código Postal',
+          'ZIP code',
           list(set(df_coord['zipcode'])))
 
 
@@ -151,19 +151,19 @@ def transform(data):
 
 def load(X):
      st.markdown("""
-     Aquí, un modelo de Machine Learning previamente entrenado recomendará el precio de una propiedad basado en sus propidades. El usuario deberá suministrar las características del inmueble utilizando el menú de la barra izquierda. A continuación se definen la información requerida. :
+Here, a Machine Learning model will suggest a price for a given property based on its specifics. The user must provide the characteristics of the property using the menu on the left bar. The required information is defined below:
           
-     - Número de baños: Número de baños de la propiedad a sugerir precio. Valores como 1.5 baños se refiere a la existencia de un baño con ducha y un baño sin ducha. 
-     - Número de pisos: Número de pisos de la propiedad a sugerir precio
-     - Número de habitaciones: Número de habitaciones de la propiedad a sugerir precio
-     - Área del inmueble: Área en pies cuadrados de la propiedad a sugerir precio
-     - Vista al agua: La propiedad a sugerir precio tiene vista al agua?
-     - Puntaje de la vista: Puntaje de la vista de la propiedad a sugerir precio.
-     - Condición del inmueble: Condición general de la propiedad a sugerir precio.
-     - Puntaje sobre la construcción: Puntja sobre la construcción de la propiedad a sugerir precio
-     - Renovación: La propiedad a sugerir precio ha sido renovada?
-     - Edad de la propiedad: La antiguedad de la propiedad a sugerir precio. 
-     - Código Postal en el que interesa buscar la propiedad
+     - Number of bathrooms: Number of bathrooms of the property to suggest price. Values ​​such as 1.5 bathrooms refer to the existence of a bathroom with a shower and a bathroom without a shower.
+     - Number of floors: Number of floors of the property to suggest price
+     - Number of rooms: Number of rooms of the property to suggest price
+     - Area of ​​the property: Area in square feet of the property to suggest price
+     - Water view: Does the property to suggest price have a water view?
+     - View score: View score of the property to suggest price.
+     - Condition of the property: General condition of the property to suggest price.
+     - Score on the construction: Score on the construction of the property to suggest price
+     - Renovation: Has the property to suggest price been renovated?
+     - Age of the property: The age of the property to suggest price.
+     - Postal Code in which you are interested in searching for the property
      """)
 
 

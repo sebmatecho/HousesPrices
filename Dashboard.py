@@ -330,32 +330,31 @@ def transform(data):
 
 def load(data,geo_data):
      data_ref = data.shape[0]
-     st.sidebar.markdown("# Parámetros")
+     st.sidebar.markdown("# Parameters")
 
-     st.title('Dinámica Inmobiliaria en King County')
+     st.title('King County Housing Dynamics')
      st.markdown(
      """
-     ##### Propuesto por [Sébastien Lozano-Forero](https://www.linkedin.com/in/sebastienlozanoforero/)
+     ##### Proposed by [Sébastien Lozano-Forero](https://www.linkedin.com/in/sebastienlozanoforero/)
 
-     En Estados Unidos el mercado inmobiliario representa entre el 3% y el 5% del Producto Interno Bruto doméstico y continuamente recibe importantes inyecciones de capital que buscan optimizar la rentabilidad. Por tanto, existe una ventana de oportunidad interesante para integrar algunas de las tendencias globales en uso de información histórica y capacidades tecnológicas, que asistan la toma decisiones en varios puntos de los flujogramas de proceso de entidades inmobiliarias. 
+     In the United States, the real estate market represents between 3% and 5% of the domestic Gross Domestic Product and continuously receives important injections of capital that seek to optimize profitability. Therefore, there is an interesting window of opportunity to integrate some of the global trends in the use of historical information and technological capabilities, which assist decision-making at various points in the process flowcharts of real estate entities.
+     
+     This dashboard is derived from the study of a year of real estate activity (between 2014 and 2015) in King County, WA - USA, which has ~2.2 million inhabitants, the original data is available[here](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction). The main idea is to facilitate the presentation and manipulation of such information with a view to a deeper understanding of the trends in this real estate market.
 
-     Este dashboard se deriva del estudio de un de año de actividad inmobiliaria (entre 2014 y 2015) en King County, WA - USA, que cuenta con ~2.2 millones de habitantes, los datos originales están disponibles [aquí](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction). La idea principal es facilitar la presentación y manipulación de tal información con miras a un entendimiento más profundo de las tendencias en este mercado inmobiliario. 
+     The **Dashboard** tab allows the user to incorporate filters that allow these trends to be studied in a disaggregated manner ([Simpson's Paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox)). The **Recommending Prices** tab incorporates a previously trained Machine Learning model to recommend a price based on the main characteristics of the property. The repository of this project is available [here](https://github.com/sebmatecho/HousesPrices)
 
-     La pestaña **Dashboard** permite al usuario incorporar filtros que permitan estudiar tales tendencias de forma desagregada ([Paradoja de Simpson](https://en.wikipedia.org/wiki/Simpson%27s_paradox)). La pestaña **Recomendando Precios** incorpora un modelo de Machine Learning previamente entrenado para recomendar un precio a partir de las principales características del inmueble. El repositorio de este proyecto se encuentre disponible [acá](https://github.com/sebmatecho/HousesPrices)
+     ## Required Filters
 
-     ## Filtro Requerido
+     The houses have been divided into four groups of equal size, based on their price.
+     - The First Tier will contain information on properties that cost less than $321,950
+     - The Second Tier will contain information on properties that cost between $321,950 and $450,000
+     - The Third Tier will contain information on properties that cost between $450,000 and $645,000
+     - The Fourth Tier will contain information on properties that cost more than $645,000
 
-     Las casas han sido divididas en cuatro grupos de igual tañamo, basadas en su precio. 
-     -  El Primer Cuartil contendrá información de las propiedades que cuestan menos de \$321.950 
-     -  El Segundo Cuartil contendrá información de las propiedades que cuestan entre \$321.950 y \$450.000
-     -  El Tercer Cuartil contendrá información de las propiedades que cuestan entre \$450.000 y \$645.000
-     -  El Cuarto Cuartil contendrá información de las propiedades que cuestan más de \$645.000
+     The zip code can be used as a proxy for locating a property in King County. See [here](https://www.zipdatamaps.com/king-wa-county-zipcodes) para más información. 
 
-     El código postal puede utilizarse como proxy para lo localización de un inmueble en King County. Consulte [aquí](https://www.zipdatamaps.com/king-wa-county-zipcodes) para más información. 
-
-     ### Filtros opcionales
-     Con el objetivo de facilitar la exploración de lo datos, el usuario es libre de seleccionar los filtros necesarios. Una vez se seleccione la variable que se quiere usar como filtro del siguiente menú, utilice las sliders del banner izquierdo para manipular los valores permitidos de la variable. Tenga en cuenta que la inclusión y uso de los filtros también modificará las figuras presentadas en el resto de esta página. 
-
+     ### Optional Filters
+     In order to facilitate the exploration of the data, the user is free to select the necessary filters. Once you select the variable you want to use as a filter from the next menu, use the sliders on the left banner to manipulate the allowed values ​​of the variable. Please note that the inclusion and use of filters will also modify the figures presented in the rest of this page.
      """)
      
      data = filt_opc(data)
@@ -364,34 +363,33 @@ def load(data,geo_data):
      dashboard(data)
 
      # Mapas
-     st.header('Distribución por Código Postal')
+     st.header('ZIP code distribution')
      st.markdown("""
-     Las siguientes figuras muestran la distribución, vía mapas de calor, del número de inmuebles disponibles, precio total y precio por pie cuadrado a partir de los códigos postales. Esto es, un vez los inmuebles son agrupados  por código postal y el valor promedio dentro de cada cluster es obtenido, se clasifican en uno de cinco grupos utilizando los respectivos quintiles. De esta forma, cada una cantidad aproximada de códigos postales en cada clúster. 
-     """)
+     The following figures show the distribution, via heat maps, of the number of available properties, total price and price per square foot based on zip codes. That is, once the properties are grouped by zip code and the average value within each cluster is obtained, they are classified into one of five groups using the respective quintiles. Thus, each an approximate number of postal codes in each cluster.""")
      
      col1, col2 = st.columns(2)
      with col1: 
-          st.header("Densidad de casas disponibles")
+          st.header("Available Properties")
           mapa1(data,geo_data)    
      # st.dataframe(geoData)
 
      with col2: 
-          st.header("Precios de casas disponibles")
+          st.header("Overall Price")
           mapa2(data,geo_data)
 
      col1, col2 = st.columns(2)
      with col1: 
-          st.header("Costo de pie cuadrado")
+          st.header("Square foot costing")
           mapa3(data,geo_data)
           
      with col2: 
-          st.header('Valores por código postal')
+          st.header('Summary by ZIP code')
           df = data[['id','zipcode','price','price/sqft']].groupby('zipcode').agg({'id':'count','price':'mean','price/sqft':'mean'}).reset_index().rename(columns= {'zipcode':'Postal code','id':'Count','price':'Average price','price/sqft':'Average price/sqft'})
           # st.dataframe(df)
           AgGrid(df.round(3),fit_columns_on_grid_load=True)
 
 
-     st.header("Información geográfica de las propiedades disponibles")
+     st.header("Where are this properties?")
 
      info_geo(data)
 
@@ -399,14 +397,14 @@ def load(data,geo_data):
 
      st.markdown(
           """
-     ### Información complementaria
-     Finalmente, el resumen numérico de todas las variables consideradas en esta base de datos se presenta a continuación. Dicha información puede ser útil para encontrar tendencias dentro de clusters que sean de interés. 
+     ### Additional Information
+    Finally, the numerical summary of all the variables considered in this database is presented below. Such information can be useful to find trends within clusters that are of interest. 
           
           """)
 
      col1, col2 = st.columns(2)
-     col1.metric("No. Casas", data.shape[0],str(100*round(data.shape[0]/data_ref,4))+'% de las casas disponibles',delta_color="off")
-     col2.metric("No. Casas Nuevas (Construida después de 1990)",data[data['house_age'] == 'new_house'].shape[0],str(100*round(data[data['house_age'] == 'new_house'].shape[0]/data_ref,4))+'% de las casas disponibles',delta_color="off")
+     col1.metric("No. Properties", data.shape[0],str(100*round(data.shape[0]/data_ref,4))+'% match the criteria',delta_color="off")
+     col2.metric("No. Properties (Built after 1990)",data[data['house_age'] == 'new_house'].shape[0],str(100*round(data[data['house_age'] == 'new_house'].shape[0]/data_ref,4))+'% match the criteria',delta_color="off")
      AgGrid(descriptiva(data),fit_columns_on_grid_load=True)  
      return None
 
