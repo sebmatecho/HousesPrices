@@ -194,9 +194,9 @@ def filt_opc(data):
      data = data[data['price_tier'].isin(tier)]
 
      OptFiltro = st.multiselect(
-          'Variables a incluir en los filtros:',
-          ['Habitaciones', 'Baños', 'Área construida (pies cuadrados)','Pisos','Vista al agua','Evaluación de la propiedad','Condición', 'Código Postal'],
-          ['Habitaciones', 'Baños'])
+          'Filters:',
+          ['Rooms', 'Bathrooms', 'Footage (sqrt feet)','Floors','View','Property Assesment','Condition', 'ZIP Code'],
+          ['Rooms', 'Bathroom'])
 
      if 'Código Postal' in OptFiltro:
           zipcod = st.multiselect(
@@ -205,82 +205,82 @@ def filt_opc(data):
                list(sorted(set(data['zipcode']))))
           data = data[data['zipcode'].isin(zipcod)]
 
-     if 'Habitaciones' in OptFiltro: 
+     if 'Rooms' in OptFiltro: 
           if data['bedrooms'].min() < data['bedrooms'].max():
                min_habs, max_habs = st.sidebar.select_slider(
-               'Número de Habitaciones',
+               'How many rooms?',
                options=list(sorted(set(data['bedrooms']))),
                value=(data['bedrooms'].min(),data['bedrooms'].max()))
                data = data[(data['bedrooms']>= min_habs)&(data['bedrooms']<= max_habs)]
           else:
                st.markdown("""
-                    El filtro **Habitaciones** no es aplicable para la selección actual de valores
+                    **Rooms** is not applicable to the current selection of filters
                     """)
-     if 'Baños' in OptFiltro: 
+     if 'Bathrooms' in OptFiltro: 
           if data['bathrooms'].min() < data['bathrooms'].max():
                min_banhos, max_banhos = st.sidebar.select_slider(
-               'Número de baños ',
+               'How many bathrooms?',
                options=list(sorted(set(data['bathrooms']))),
                value=(data['bathrooms'].min(), data['bathrooms'].max()))
                data = data[(data['bathrooms']>= min_banhos)&(data['bathrooms']<= max_banhos)]
           else:
                st.markdown("""
-                    El filtro **Baños** no es aplicable para la selección actual de valores
+                    **Bathrooms** is not applicable to the current selection of filters
                     """)
-     if 'Área construida (pies cuadrados)' in OptFiltro: 
+     if 'Footage (sqrt feet)' in OptFiltro: 
           if data['sqft_living'].min() < data['sqft_living'].max():
-               area = st.sidebar.slider('Área construida menor a', int(data['sqft_living'].min()),int(data['sqft_living'].max()),2000)
+               area = st.sidebar.slider('Footage', int(data['sqft_living'].min()),int(data['sqft_living'].max()),2000)
                data = data[data['sqft_living']<area]
           else:  
                st.markdown("""
-                    El filtro **Área construida (pies cuadrados)** no es aplicable para la selección actual de valores
+                    **Footage (sqrt feet)** is not applicable to the current selection of filters
                     """)
 
-     if 'Pisos' in OptFiltro: 
+     if 'Floors' in OptFiltro: 
           if data['floors'].min() < data['floors'].max():
                min_pisos, max_pisos = st.sidebar.select_slider(
-               'Número de Pisos',
+               'How many floors?',
                options=list(sorted(set(data['floors']))),
                value=(data['floors'].min(),data['floors'].max()))
                data = data[(data['floors']>= min_pisos)&(data['floors']<= max_pisos)]
           else:
                st.markdown("""
-                    El filtro **Pisos** no es aplicable para la selección actual de valores
+                    **Floors** is not applicable to the current selection of filters
                     """)
 
-     if 'Vista al agua' in OptFiltro: 
+     if 'View' in OptFiltro: 
           if data['view'].min() < data['view'].max():
                min_vista, max_vista = st.sidebar.select_slider(
-               'Puntaje de vista al agua',
+               'View',
                options=list(sorted(set(data['view']))),
                value=(data['view'].min(),data['view'].max()))
                data = data[(data['view']>= min_vista)&(data['view']<= max_vista)]
           else:
                st.markdown("""
-                    El filtro **Vista al agua** no es aplicable para la selección actual de valores
+                    **View** is not applicable to the current selection of filters
                     """)
-     if 'Evaluación de la propiedad' in OptFiltro:
+     if 'Property Assesment' in OptFiltro:
           if data['grade'].min() < data['grade'].max():
                min_cond, max_cond = st.sidebar.select_slider(
-               'Índice de evaluación de la propiedad',
+               'Property Assesment',
                options=list(sorted(set(data['grade']))),
                value=(data['grade'].min(),data['grade'].max()))
                data = data[(data['grade']>= min_cond)&(data['grade']<= max_cond)]
           else:
                st.markdown("""
-                    El filtro **Evaluación de la propiedad** no es aplicable para la selección actual de valores
+                   **Property Assesment** is not applicable to the current selection of filters
                     """)
 
-     if 'Condición' in OptFiltro:
+     if 'Condition' in OptFiltro:
           if data['condition'].min() < data['condition'].max():
                min_condi, max_condi = st.sidebar.select_slider(
-               'Condición de la propiedad',
+               'Condition',
                options=list(sorted(set(data['condition']))),
                value=(data['condition'].min(),data['condition'].max()))
                data = data[(data['condition']>= min_condi)&(data['condition']<= max_condi)]
           else:
                st.markdown("""
-                    El filtro **Condición** no es aplicable para la selección actual de valores
+                **Condition** is not applicable to the current selection of filters
                     """)
      return data
 

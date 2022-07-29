@@ -153,17 +153,17 @@ def load(X):
      st.markdown("""
 Here, a Machine Learning model will suggest a price for a given property based on its specifics. The user must provide the characteristics of the property using the menu on the left bar. The required information is defined below:
           
-     - Number of bathrooms: Number of bathrooms of the property to suggest price. Values ​​such as 1.5 bathrooms refer to the existence of a bathroom with a shower and a bathroom without a shower.
-     - Number of floors: Number of floors of the property to suggest price
-     - Number of rooms: Number of rooms of the property to suggest price
-     - Area of ​​the property: Area in square feet of the property to suggest price
-     - Water view: Does the property to suggest price have a water view?
-     - View score: View score of the property to suggest price.
-     - Condition of the property: General condition of the property to suggest price.
-     - Score on the construction: Score on the construction of the property to suggest price
-     - Renovation: Has the property to suggest price been renovated?
-     - Age of the property: The age of the property to suggest price.
-     - Postal Code in which you are interested in searching for the property
+- Number of bathrooms: Number of bathrooms of the property of interest. Values ​​such as 1.5 bathrooms refer to the existence of a bathroom with a shower and a bathroom without a shower.
+- Number of floors: Number of floors of the property of interest
+- Number of rooms: Number of rooms of the property of interest
+- Area of ​​the property: Footage in square feet of the property of interest
+- Waterfront: Does the property of interest have a water view?
+- View score: View score of the property of interest
+- Condition of the property: General condition of the property of interest
+- Score on the construction: Score on the construction of the property of interest
+- Renovation: Has the property of interest been renovated?
+- Age of the property: The 'age' of the property of interest
+- Postal Code in which property of interest is based
      """)
 
 
