@@ -318,10 +318,10 @@ def transform(data):
      data.loc[data['condition'].isin([3,4]), 'condition_type'] = 'regular'
      data.loc[data['condition']== 5, 'condition_type'] = 'good'
 
-     data['price_tier'] = data['price'].apply(lambda x: 'Primer cuartil' if x <= 321950 else
-                                                       'Segundo cuartil' if (x > 321950) & (x <= 450000) else
-                                                       'Tercer cuartil' if (x > 450000) & (x <= 645000) else
-                                                       'Cuarto cuartil')
+     data['price_tier'] = data['price'].apply(lambda x: 'First Tier' if x <= 321950 else
+                                                       'Second Tier' if (x > 321950) & (x <= 450000) else
+                                                       'Third Tier' if (x > 450000) & (x <= 645000) else
+                                                       'Fourth Tier')
 
      data['price/sqft'] = data['price']/data['sqft_living']
      return data
