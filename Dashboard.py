@@ -194,11 +194,11 @@ def filt_opc(data):
      data = data[data['price_tier'].isin(tier)]
 
      OptFiltro = st.multiselect(
-          'Filters:',
+          'Filters',
           ['Rooms', 'Bathrooms', 'Footage (sqrt feet)','Floors','View','Property Assesment','Condition', 'ZIP Code'],
-          ['Rooms', 'Bathroom'])
+          ['Rooms', 'Bathrooms'])
 
-     if 'Código Postal' in OptFiltro:
+     if 'ZIP Code' in OptFiltro:
           zipcod = st.multiselect(
                'Códigos postales',
                list(sorted(set(data['zipcode']))),
