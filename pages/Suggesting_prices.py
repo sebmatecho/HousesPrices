@@ -167,7 +167,7 @@ Here, a Machine Learning model will suggest a price for a given property based o
      """)
 
 
-     if st.button('Recomendar precio'):
+     if st.button('Suggest price'):
 
           # with tempfile.TemporaryFile() as fp: 
           #      client.download_fileobj(Fileobj = fp, 
@@ -178,12 +178,12 @@ Here, a Machine Learning model will suggest a price for a given property based o
           modelo_final = joblib.load('./parameters/xbg_final.sav')
           precio = modelo_final.predict(X)[0]
           # st.balloons()
-          st.success('Un valor sugerido ha sido calculado')
+          st.success('A suggested value is now available!')
      #     st.write('El precio sugerido es:', )
-          st.metric("Valor sugerido", '$'+str(f'{round(np.expm1(precio)):,}')+ ' usd')
+          st.metric("Suggested prive", '$'+str(f'{round(np.expm1(precio)):,}')+ ' usd')
      else:
           # st.snow()
-          st.error('Por favor, seleccione los parámatros de la propiedad a estimar el precio.')
+          st.error('Please enter the specifics of the property of interest.')
      
      return None
      
