@@ -2,7 +2,7 @@
 ### Proposed by [Sébastien Lozano-Forero](https://www.linkedin.com/in/sebastienlozanoforero/)
 
 ## Project information
-This project was proposed as way to showcase my skills, as part of my [Data Science Portfolio] (https://sebmatecho.github.io/Portfolio/). This end-to-end project starts with raw data (thanks Kaggle!) and ends with an app running in production able to describe housing dynamics and suggesting prices using a Machine Learning model.  
+This project was proposed as way to showcase my skills, as part of my [Data Science Portfolio](https://sebmatecho.github.io/Portfolio/). This end-to-end project starts with raw data (thanks Kaggle!) and ends with an app running in production able to describe housing dynamics and suggesting prices using a Machine Learning model.  
 #### Methods used
 - Exploratory Data Analysis (EDA)
 - Data Visualization
