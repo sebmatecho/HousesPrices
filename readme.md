@@ -54,7 +54,7 @@ After an exhaustive process of algorithm adjustment including various data prepa
 After selecting the XGBoost model, a random search procedure was implemented in order to get the best possible model out of the XGBoost category. For this, a grid of potential values for the parameter model (n_estimators, eta, max_depth, subsample, colsample_bytree and min_child_weight, see [here](https://xgboost.readthedocs.io/en/stable/parameter.html9) for more) was assessed. After a extensive search process, an adequate set of parameters was found and implemented. The final model displayed the following goodness of fit metrics. 
 
 | Model | MAE |MAPE |RMSE | R2 |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 |XGboost	|0.23538+/-0.01|	0.08858+/-0.01|	0.29733+/-0.01	|0.634+/-0.01|
 ## Deployment
 
